@@ -1,18 +1,21 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/robfig/cron/v3"
+)
 
 func main() {
-	//=======================================================
-	uname, password, truename := GetConfigData()
-	encryptuname := encryptByAES(uname)
-	encryptpassword := encryptByAES(password)
-	cookie := loginAndGetCookie(encryptuname, encryptpassword)
-	//=======================================================
-	puid, _ := GetPuid(cookie)
-	cookie2, id, name, fullname := GetInfoAndGetCookie2(cookie, puid)
-	//=======================================================
-	checkCode, uuid := GetCheckCode(cookie)
-	formData(checkCode, uuid, cookie2, puid, id, name, fullname, truename)
-	fmt.Scanln()
+	Task()
+	crontab := cron.New(cron.WithSeconds())
+	task := func() {
+		Task()
+	}
+	spec := "0 0 1 * * ?"
+	_, err := crontab.AddFunc(spec, task)
+	if err != nil {
+		fmt.Println("定时任务添加失败", err)
+	}
+	crontab.Start()
+	select {}
 }

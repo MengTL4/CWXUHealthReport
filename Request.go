@@ -55,6 +55,7 @@ func loginAndGetCookie(uname string, password string) []*http.Cookie {
 			"independentId":     "0",
 		}).
 		Post("https://passport2.chaoxing.com/fanyalogin")
+	defer loginAu.Body.Close()
 	cookies := loginAu.Cookies()
 	if err != nil {
 		fmt.Println("登陆失败", err)
@@ -87,6 +88,7 @@ func GetPuid(cookies []*http.Cookie) (string, []*http.Cookie) {
 		SetCookies(cookies...).
 		SetSuccessResult(&response).
 		Get("https://noteyd.chaoxing.com/pc/files/getUploadConfig")
+	defer get.Body.Close()
 	if err != nil {
 		fmt.Println("GetPuid失败")
 	}
@@ -130,6 +132,7 @@ func GetInfoAndGetCookie2(cookie []*http.Cookie, puid string) ([]*http.Cookie, s
 		}).
 		SetSuccessResult(&info).
 		Get("https://office.chaoxing.com/data/form/find/user/sel/org?uid={uid}")
+	defer get.Body.Close()
 	if err != nil {
 		fmt.Println("GetInfo请求发送失败", err)
 	}
@@ -216,6 +219,7 @@ func formData(checkCode string, uuid string, cookies2 []*http.Cookie, puid strin
 		}).
 		SetCookies(cookies2...).
 		Post("https://office.chaoxing.com/data/apps/forms/fore/user/save?lookuid=198369118")
+	defer post.Body.Close()
 	if err != nil {
 		fmt.Printf("表单提交发生错误%s", err)
 	}
